@@ -15,6 +15,7 @@ import { BasicTracerProvider, SpanExporter, Tracer } from '@opentelemetry/sdk-tr
 import { EventSpanProcessor } from './EventSpanProcessor';
 import { SimpleContext } from './SimpleContext';
 import { SemanticResourceAttributes, SemanticAttributes } from '@opentelemetry/semantic-conventions';
+import { DatadogPropagator } from 'opentelemetry-exporter-datadog';
 import { Diary, diary, LogEvent, enable } from "diary";
 import { HeadersTextMapper } from './HeadersTextExtractor';
 import { cloneRequest } from './utils';
@@ -132,7 +133,11 @@ export class WorkersSDK {
         const spanProcessor = new EventSpanProcessor(this.traceExporter);
         this.traceProvider.addSpanProcessor(spanProcessor);
         this.propagator = new CompositePropagator({
-            propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+            propagators: [
+				new W3CTraceContextPropagator(),
+				new W3CBaggagePropagator(),
+				new DatadogPropagator(),
+			],
         });
         this.requestTracer = this.traceProvider.getTracer('opentelemetry-sdk-workers', '0.1.0');
 
