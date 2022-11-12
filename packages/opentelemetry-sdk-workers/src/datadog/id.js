@@ -1,6 +1,6 @@
 'use strict'
 
-const { randomFillSync } = require('randomfill');
+import { randomFillSync } from 'randomfill';
 
 const UINT_MAX = 4294967296
 
