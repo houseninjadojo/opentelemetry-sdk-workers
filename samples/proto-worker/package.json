@@ -5,6 +5,6 @@
         "wrangler": "^2.0.22"
     },
     "dependencies": {
-        "opentelemetry-sdk-workers": "workspace:*"
+        "@houseninja/opentelemetry-sdk-workers": "workspace:*"
     }
 }

@@ -55,6 +55,7 @@ importers:
   packages/opentelemetry-sdk-workers:
     specifiers:
       '@cloudflare/workers-types': ^3.14.1
+      '@houseninja/opentelemetry-exporter-datadog': ^0.2.0-beta.0
       '@opentelemetry/api': ^1.1.0
       '@opentelemetry/core': ^1.4.0
       '@opentelemetry/instrumentation': ^0.30.0
@@ -66,10 +67,10 @@ importers:
       '@types/lodash-es': ^4.17.6
       diary: ^0.3.1
       lodash-es: ^4.17.21
-      opentelemetry-exporter-datadog: ^0.2.0
       protobufjs: ^7.0.0
       protobufjs-cli: ^1.0.0
     dependencies:
+      '@houseninja/opentelemetry-exporter-datadog': 0.2.0-beta.0
       '@opentelemetry/api': 1.1.0
       '@opentelemetry/core': 1.4.0_@opentelemetry+api@1.1.0
       '@opentelemetry/otlp-exporter-base': 0.30.0_@opentelemetry+api@1.1.0
@@ -77,7 +78,6 @@ importers:
       '@opentelemetry/resources': 1.4.0_@opentelemetry+api@1.1.0
       '@opentelemetry/sdk-trace-base': 1.4.0_@opentelemetry+api@1.1.0
       '@opentelemetry/semantic-conventions': 1.4.0
-      opentelemetry-exporter-datadog: 0.2.0
       protobufjs: 7.0.0
     devDependencies:
       '@cloudflare/workers-types': 3.14.1
@@ -89,19 +89,19 @@ importers:
 
   samples/basic-worker:
     specifiers:
-      opentelemetry-sdk-workers: workspace:*
+      '@houseninja/opentelemetry-sdk-workers': workspace:*
       wrangler: ^2.0.22
     dependencies:
-      opentelemetry-sdk-workers: link:../../packages/opentelemetry-sdk-workers
+      '@houseninja/opentelemetry-sdk-workers': link:../../packages/opentelemetry-sdk-workers
     devDependencies:
       wrangler: 2.0.22
 
   samples/proto-worker:
     specifiers:
-      opentelemetry-sdk-workers: workspace:*
+      '@houseninja/opentelemetry-sdk-workers': workspace:*
       wrangler: ^2.0.22
     dependencies:
-      opentelemetry-sdk-workers: link:../../packages/opentelemetry-sdk-workers
+      '@houseninja/opentelemetry-sdk-workers': link:../../packages/opentelemetry-sdk-workers
     devDependencies:
       wrangler: 2.0.22
 
@@ -2530,6 +2530,17 @@ packages:
     dependencies:
       '@hapi/hoek': 9.3.0
 
+  /@houseninja/opentelemetry-exporter-datadog/0.2.0-beta.0:
+    resolution: {integrity: sha512-pwAT/7itqXBfi0O/6ZxzcqAmhN7YWauSZaRCGAetEtfSVL4A4a+AjPmJzII/Vywp6UNBJoPY6967AIQIWQ/06w==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      '@opentelemetry/api': 0.16.0
+      '@opentelemetry/core': 0.16.0
+      '@opentelemetry/resources': 0.16.0
+      '@opentelemetry/tracing': 0.16.0
+      dd-trace: 0.21.1
+    dev: false
+
   /@hutson/parse-repository-url/3.0.2:
     resolution: {integrity: sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==}
     engines: {node: '>=6.9.0'}
@@ -4035,8 +4046,10 @@ packages:
       clean-stack: 2.2.0
       indent-string: 4.0.0
 
-  /ajv-formats/2.1.1:
+  /ajv-formats/2.1.1_ajv@8.11.0:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -9095,18 +9108,6 @@ packages:
     hasBin: true
     dev: false
 
-  /opentelemetry-exporter-datadog/0.2.0:
-    resolution: {integrity: sha512-W4VyQO1KGDWOrRc4ZfByTD+YzSmOzV0ZeC80oHrcf45Fo1E2kOHGPmuQrPQtEmwvNWTNcqLGLl4t5lum/lIY7g==}
-    engines: {node: '>=8.0.0'}
-    deprecated: 'This exporter has been deprecated. To export your OTLP traces from OpenTelemetry SDK directly to Datadog Agent, please refer to OTLP Ingest in Datadog Agent: https://docs.datadoghq.com/tracing/setup_overview/open_standards/#otlp-ingest-in-datadog-agent'
-    dependencies:
-      '@opentelemetry/api': 0.16.0
-      '@opentelemetry/core': 0.16.0
-      '@opentelemetry/resources': 0.16.0
-      '@opentelemetry/tracing': 0.16.0
-      dd-trace: 0.21.1
-    dev: false
-
   /opentracing/0.14.7:
     resolution: {integrity: sha512-vz9iS7MJ5+Bp1URw8Khvdyw1H/hGvzHWlKQ7eRrQojSCDL1/SrWfrY9QebLw97n2deyRtzHRC3MkQfVNUCo91Q==}
     engines: {node: '>=0.10'}
@@ -10228,6 +10229,12 @@ packages:
   /react-dev-utils/12.0.1_3o2jfq6vfqxns3sz6wn2nnc3ei:
     resolution: {integrity: sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==}
     engines: {node: '>=14'}
+    peerDependencies:
+      typescript: '>=2.7'
+      webpack: '>=4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       '@babel/code-frame': 7.18.6
       address: 1.2.0
@@ -10253,12 +10260,12 @@ packages:
       shell-quote: 1.7.3
       strip-ansi: 6.0.1
       text-table: 0.2.0
+      typescript: 4.7.4
+      webpack: 5.73.0
     transitivePeerDependencies:
       - eslint
       - supports-color
-      - typescript
       - vue-template-compiler
-      - webpack
     dev: false
 
   /react-dom/17.0.2_react@17.0.2:
@@ -10862,7 +10869,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       ajv-keywords: 5.1.0_ajv@8.11.0
     dev: false
 
@@ -11909,6 +11916,7 @@ packages:
   /unified/9.2.0:
     resolution: {integrity: sha512-vx2Z0vY+a3YoTj8+pttM3tiJHCwY5UFbYdiWrwBEbHmK8pvsPj2rtAX2BFfgXen8T39CJWblWRDT4L5WGXtDdg==}
     dependencies:
+      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5
@@ -11920,6 +11928,7 @@ packages:
   /unified/9.2.2:
     resolution: {integrity: sha512-Sg7j110mtefBD+qunSLO1lqOEKdrwBFBrR6Qd8f4uwkhWNlbkaqwHse6e7QvD3AP/MNoJdEDLaf8OxYyoWgorQ==}
     dependencies:
+      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5
