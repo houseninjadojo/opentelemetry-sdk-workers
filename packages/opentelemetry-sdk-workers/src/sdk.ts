@@ -15,7 +15,7 @@ import { BasicTracerProvider, SpanExporter, Tracer } from '@opentelemetry/sdk-tr
 import { EventSpanProcessor } from './EventSpanProcessor';
 import { SimpleContext } from './SimpleContext';
 import { SemanticResourceAttributes, SemanticAttributes } from '@opentelemetry/semantic-conventions';
-import { DatadogPropagator } from '@houseninja/opentelemetry-exporter-datadog';
+import { DatadogPropagator } from './datadog/propagator';
 import { Diary, diary, LogEvent, enable } from "diary";
 import { HeadersTextMapper } from './HeadersTextExtractor';
 import { cloneRequest } from './utils';
