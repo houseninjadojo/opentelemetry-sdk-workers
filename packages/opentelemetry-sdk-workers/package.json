@@ -1,6 +1,6 @@
 {
   "name": "@houseninja/opentelemetry-sdk-workers",
-  "version": "0.4.0-beta.6",
+  "version": "0.4.0-beta.7",
   "description": "Open Telemetry Cloudflare Workers Library. Provides a basic sdk for instrumenting workers.",
   "module": "dist/index.mjs",
   "exports": {

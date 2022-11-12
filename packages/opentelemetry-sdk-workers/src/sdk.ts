@@ -134,9 +134,9 @@ export class WorkersSDK {
         this.traceProvider.addSpanProcessor(spanProcessor);
         this.propagator = new CompositePropagator({
             propagators: [
+				new DatadogPropagator(),
 				new W3CTraceContextPropagator(),
 				new W3CBaggagePropagator(),
-				new DatadogPropagator(),
 			],
         });
         this.requestTracer = this.traceProvider.getTracer('opentelemetry-sdk-workers', '0.1.0');
