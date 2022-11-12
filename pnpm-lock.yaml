@@ -55,7 +55,7 @@ importers:
   packages/opentelemetry-sdk-workers:
     specifiers:
       '@cloudflare/workers-types': ^3.14.1
-      '@houseninja/opentelemetry-exporter-datadog': ^0.2.0-beta.1
+      '@houseninja/opentelemetry-exporter-datadog': ^0.2.0-beta.2
       '@opentelemetry/api': ^1.1.0
       '@opentelemetry/core': ^1.4.0
       '@opentelemetry/instrumentation': ^0.30.0
@@ -70,7 +70,7 @@ importers:
       protobufjs: ^7.0.0
       protobufjs-cli: ^1.0.0
     dependencies:
-      '@houseninja/opentelemetry-exporter-datadog': 0.2.0-beta.1
+      '@houseninja/opentelemetry-exporter-datadog': 0.2.0-beta.2
       '@opentelemetry/api': 1.1.0
       '@opentelemetry/core': 1.4.0_@opentelemetry+api@1.1.0
       '@opentelemetry/otlp-exporter-base': 0.30.0_@opentelemetry+api@1.1.0
@@ -2530,8 +2530,8 @@ packages:
     dependencies:
       '@hapi/hoek': 9.3.0
 
-  /@houseninja/opentelemetry-exporter-datadog/0.2.0-beta.1:
-    resolution: {integrity: sha512-il034fEnnFoZch0hnke6/v2T5XfcMtZ+X6IWDQ/pp0q93c+9EvTt4wBI13BhUGCWycKn5OCKfCKEq8K3rGfxQg==}
+  /@houseninja/opentelemetry-exporter-datadog/0.2.0-beta.2:
+    resolution: {integrity: sha512-U+/WqrFHIXP4cJib10dfsnfJLTshbQ/NpS1b2dwns+Tp0DI4pS3/2RaJZzCUT4uD0Zhy1FHw3k4oPBMHlhTOaw==}
     engines: {node: '>=8.0.0'}
     dependencies:
       '@opentelemetry/api': 0.16.0
