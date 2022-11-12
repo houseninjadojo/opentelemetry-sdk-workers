@@ -68,6 +68,7 @@ importers:
       lodash-es: ^4.17.21
       protobufjs: ^7.0.0
       protobufjs-cli: ^1.0.0
+      randomfill: ^1.0.4
     dependencies:
       '@opentelemetry/api': 1.1.0
       '@opentelemetry/core': 1.4.0_@opentelemetry+api@1.1.0
@@ -77,6 +78,7 @@ importers:
       '@opentelemetry/sdk-trace-base': 1.4.0_@opentelemetry+api@1.1.0
       '@opentelemetry/semantic-conventions': 1.4.0
       protobufjs: 7.0.0
+      randomfill: 1.0.4
     devDependencies:
       '@cloudflare/workers-types': 3.14.1
       '@opentelemetry/instrumentation': 0.30.0_@opentelemetry+api@1.1.0
@@ -10010,6 +10012,13 @@ packages:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
       safe-buffer: 5.2.1
+
+  /randomfill/1.0.4:
+    resolution: {integrity: sha512-87lcbR8+MhcWcUiQ+9e+Rwx8MyR2P7qnt15ynUlbm3TU/fjbgz4GsvfSUDTemtCCtVCqb4ZcEFlyPNTh9bBTLw==}
+    dependencies:
+      randombytes: 2.1.0
+      safe-buffer: 5.2.1
+    dev: false
 
   /range-parser/1.2.0:
     resolution: {integrity: sha512-kA5WQoNVo4t9lNx2kQNFCxKeBl5IbbSNBl1M/tLkw9WCn+hxNBAW5Qh8gdhs63CJnhjJ2zQWFoqPJP2sK1AV5A==}
