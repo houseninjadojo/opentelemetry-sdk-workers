@@ -1,6 +1,6 @@
 {
   "name": "@houseninja/opentelemetry-sdk-workers",
-  "version": "0.4.0-beta.7",
+  "version": "0.4.0-beta.8",
   "description": "Open Telemetry Cloudflare Workers Library. Provides a basic sdk for instrumenting workers.",
   "module": "dist/index.mjs",
   "exports": {
@@ -9,7 +9,7 @@
       "default": "./dist/index.mjs"
     },
     "./performance": {
-      "types": "./dist/preformance.d.ts",
+      "types": "./dist/performance.d.ts",
       "default": "./dist/performance.mjs"
     },
     "./exporters/OTLPProtoTraceExporter": {
@@ -79,21 +79,25 @@
     "pnpm": ">=7"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.1.0",
-    "@opentelemetry/core": "^1.4.0",
-    "@opentelemetry/otlp-exporter-base": "^0.30.0",
-    "@opentelemetry/otlp-transformer": "^0.30.0",
-    "@opentelemetry/resources": "^1.4.0",
-    "@opentelemetry/sdk-trace-base": "^1.4.0",
-    "@opentelemetry/semantic-conventions": "^1.4.0",
+    "@opentelemetry/api": "^1.3.0",
+    "@opentelemetry/api-logs": "^0.34.0",
+    "@opentelemetry/core": "^1.8.0",
+    "@opentelemetry/otlp-exporter-base": "^0.34.0",
+    "@opentelemetry/otlp-transformer": "^0.34.0",
+    "@opentelemetry/resources": "^1.8.0",
+    "@opentelemetry/sdk-metrics": "^1.8.0",
+    "@opentelemetry/sdk-trace-base": "^1.8.0",
+    "@opentelemetry/semantic-conventions": "^1.8.0",
+    "diary": "^0.4.3",
     "protobufjs": "^7.0.0",
     "randomfill": "^1.0.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.14.1",
     "@opentelemetry/instrumentation": "^0.30.0",
+    "@opentelemetry/sdk-trace-base": "^1.4.0",
+    "@opentelemetry/tracing": "^0.24.0",
     "@types/lodash-es": "^4.17.6",
-    "diary": "^0.3.1",
     "lodash-es": "^4.17.21",
     "protobufjs-cli": "^1.0.0"
   }

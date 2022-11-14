@@ -14,6 +14,10 @@ import {
   TextMapSetter,
   TraceFlags,
 } from '@opentelemetry/api';
+import {
+  getSpanContext,
+  setSpanContext
+} from '@opentelemetry/api/build/esm/trace/context-utils';
 import id from './id';
 import { DatadogPropagationDefaults, DatadogDefaults } from './defaults';
 import { TraceState } from '@opentelemetry/core';
@@ -36,7 +40,7 @@ function isValidSpanId(spanId: string): boolean {
  */
 export class DatadogPropagator implements TextMapPropagator {
   inject(context: Context, carrier: unknown, setter: TextMapSetter): void {
-    const spanContext = trace.getSpanContext(context);
+    const spanContext = getSpanContext(context);
 
     if (!spanContext || !isSpanContextValid(spanContext)) return;
 
@@ -44,8 +48,8 @@ export class DatadogPropagator implements TextMapPropagator {
       isValidTraceId(spanContext.traceId) &&
       isValidSpanId(spanContext.spanId)
     ) {
-      const ddTraceId = id(spanContext.traceId).toString(10);
-      const ddSpanId = id(spanContext.spanId).toString(10);
+      const ddTraceId = id(spanContext.traceId, 'hex').toString(10);
+      const ddSpanId = id(spanContext.spanId, 'hex').toString(10);
 
       setter.set(carrier, DatadogPropagationDefaults.X_DD_TRACE_ID, ddTraceId);
       setter.set(carrier, DatadogPropagationDefaults.X_DD_PARENT_ID, ddSpanId);
@@ -117,7 +121,7 @@ export class DatadogPropagator implements TextMapPropagator {
     }
 
     // TODO: is this accurate?
-    const traceId = id(traceIdHeaderValue, 10).toString('hex');
+    const traceId = id(traceIdHeaderValue, 10).toString('hex').padStart(32, '0');
     const spanId = id(spanIdHeaderValue, 10).toString('hex');
 
     if (isValidTraceId(traceId) && isValidSpanId(spanId)) {
@@ -133,7 +137,7 @@ export class DatadogPropagator implements TextMapPropagator {
           `${DatadogDefaults.OT_ALLOWED_DD_ORIGIN}=${origin}`
         );
       }
-      return trace.setSpanContext(context, contextOptions);
+      return setSpanContext(context, contextOptions);
     }
     return context;
   }
