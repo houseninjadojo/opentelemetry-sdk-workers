@@ -14,17 +14,17 @@ let batch = 0
 
 // Internal representation of a trace or span ID.
 class Identifier {
-  constructor (value, radix = 16) {
+  constructor (value, radix) {
     this._isUint64BE = true // msgpack-lite compatibility
-    this._buffer = radix === 16
-      ? createBuffer(value)
-      : fromString(value, radix)
+    this._buffer = typeof radix === 'number'
+      ? fromString(value, radix)
+      : createBuffer(value)
   }
 
-  toString (radix = 16) {
-    return radix === 16
-      ? toHexString(this._buffer)
-      : toNumberString(this._buffer, radix)
+  toString (radix) {
+    return typeof radix === 'number'
+      ? toNumberString(this._buffer, radix)
+      : toHexString(this._buffer)
   }
 
   toBuffer () {
@@ -49,13 +49,10 @@ function createBuffer (value) {
   if (value === '0') return zeroId
   if (!value) return pseudoRandom()
 
-  const size = Math.ceil(value.length / 16) * 16
-  const bytes = size / 2
-  const buffer = new Array(bytes)
+  const size = Math.ceil(value.length / 2)
+  const buffer = new Array(size)
 
-  value = value.padStart(size, '0')
-
-  for (let i = 0; i < bytes; i++) {
+  for (let i = 0; i < size; i++) {
     buffer[i] = parseInt(value.substring(i * 2, i * 2 + 2), 16)
   }
 
@@ -103,8 +100,8 @@ function fromString (str, raddix) {
 
 // Convert a buffer to a numerical string.
 function toNumberString (buffer, radix) {
-  let high = readInt32(buffer, buffer.length - 8)
-  let low = readInt32(buffer, buffer.length - 4)
+  let high = readInt32(buffer, 0)
+  let low = readInt32(buffer, 4)
   let str = ''
 
   radix = radix || 10
