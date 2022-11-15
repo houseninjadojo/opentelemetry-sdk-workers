@@ -12,6 +12,7 @@ import {
     _globalThis,
 } from '@opentelemetry/core';
 import { BasicTracerProvider, SpanExporter, Tracer } from '@opentelemetry/sdk-trace-base';
+import { B3Propagator } from '@opentelemetry/propagator-b3';
 import { EventSpanProcessor } from './EventSpanProcessor';
 import { SimpleContext } from './SimpleContext';
 import { SemanticResourceAttributes, SemanticAttributes } from '@opentelemetry/semantic-conventions';
@@ -136,7 +137,7 @@ export class WorkersSDK {
             propagators: [
 				new DatadogPropagator(),
 				new W3CTraceContextPropagator(),
-				new W3CBaggagePropagator(),
+				new B3Propagator(),
 			],
         });
         this.requestTracer = this.traceProvider.getTracer('opentelemetry-sdk-workers', '0.1.0');

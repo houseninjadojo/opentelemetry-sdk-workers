@@ -48,8 +48,8 @@ export class DatadogPropagator implements TextMapPropagator {
       isValidTraceId(spanContext.traceId) &&
       isValidSpanId(spanContext.spanId)
     ) {
-      const ddTraceId = id(spanContext.traceId, 'hex').toString(10);
-      const ddSpanId = id(spanContext.spanId, 'hex').toString(10);
+      const ddTraceId = id(spanContext.traceId, 16).toString(10);
+      const ddSpanId = id(spanContext.spanId, 16).toString(10);
 
       setter.set(carrier, DatadogPropagationDefaults.X_DD_TRACE_ID, ddTraceId);
       setter.set(carrier, DatadogPropagationDefaults.X_DD_PARENT_ID, ddSpanId);
@@ -122,7 +122,7 @@ export class DatadogPropagator implements TextMapPropagator {
 
     // TODO: is this accurate?
     const traceId = id(traceIdHeaderValue, 10).toString('hex').padStart(32, '0');
-    const spanId = id(spanIdHeaderValue, 10).toString('hex');
+    const spanId = id(spanIdHeaderValue, 10).toString('hex').padStart(16, '0');
 
     if (isValidTraceId(traceId) && isValidSpanId(spanId)) {
       const contextOptions: any = {
