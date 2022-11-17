@@ -1,17 +1,14 @@
 import { OTLPJsonTraceExporter, OTLPJsonTraceExporterConfig } from './exporters/OTLPJsonTraceExporter';
 import { Resource } from '@opentelemetry/resources';
-import { Context, DiagLogLevel, Sampler, Span, SpanKind, TextMapPropagator, trace, } from '@opentelemetry/api';
+import { Context, DiagLogLevel, Span, SpanKind, TextMapPropagator, trace, } from '@opentelemetry/api';
 import {
-    AlwaysOnSampler,
     baggageUtils,
     CompositePropagator,
     ExportResultCode,
     hrTime,
-    W3CBaggagePropagator,
-    W3CTraceContextPropagator,
     _globalThis,
 } from '@opentelemetry/core';
-import { BasicTracerProvider, SpanExporter, Tracer } from '@opentelemetry/sdk-trace-base';
+import { BasicTracerProvider, SpanExporter, Tracer, AlwaysOnSampler, Sampler } from '@opentelemetry/sdk-trace-base';
 import { B3Propagator } from '@opentelemetry/propagator-b3';
 import { EventSpanProcessor } from './EventSpanProcessor';
 import { SimpleContext } from './SimpleContext';
@@ -50,6 +47,7 @@ type NodeSdkBuiltInExporter = {
 
 type NodeSdkExternalExporter = {
     traceExporter: SpanExporter;
+	tracePropagator?: TextMapPropagator;
 };
 
 type NodeSdkConfig = NodeSdkConfigBase & (NodeSdkBuiltInExporter | NodeSdkExternalExporter);
@@ -133,13 +131,17 @@ export class WorkersSDK {
 
         const spanProcessor = new EventSpanProcessor(this.traceExporter);
         this.traceProvider.addSpanProcessor(spanProcessor);
-        this.propagator = new CompositePropagator({
-            propagators: [
-				new DatadogPropagator(),
-				new W3CTraceContextPropagator(),
-				new B3Propagator(),
-			],
-        });
+
+		if ('tracePropagator' in config) {
+			this.propagator = config.tracePropagator;
+		} else {
+			this.propagator = new CompositePropagator({
+				propagators: [
+					new DatadogPropagator(),
+					new B3Propagator(),
+				],
+			});
+		}
         this.requestTracer = this.traceProvider.getTracer('opentelemetry-sdk-workers', '0.1.0');
 
         const { span, spanContext } = this.initSpan();
