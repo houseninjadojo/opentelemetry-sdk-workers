@@ -9,12 +9,30 @@ import {
 } from "@opentelemetry/otlp-exporter-base";
 import { isError } from "lodash-es";
 
+export type CfContext = { waitUntil: (promise: Promise<any>) => void };
+
 export type OTLPCloudflareExporterBaseConfig = Omit<
 	OTLPExporterConfigBase,
 	"hostname"
 > & {
 	url: string;
 	compress?: boolean;
+	ctx?: CfContext;
+};
+
+const handleErrorResponse = (res: Response) => {
+	if (!res.ok) {
+		throw new OTLPExporterError(res.statusText, res.status);
+	}
+};
+
+const handleCatchResponse = (error: Error) => {
+	if (isError(error)) {
+		if (error.name === "TimeoutError") {
+			throw new OTLPExporterError("Request Timeout");
+		}
+	}
+	throw new OTLPExporterError(`Unknown error ${error}`);
 };
 
 /**
@@ -30,6 +48,7 @@ export abstract class OTLPCloudflareExporterBase<
 
 	public readonly url: string;
 	public readonly timeoutMillis: number;
+	public readonly ctx: CfContext;
 	protected _concurrencyLimit: number;
 	protected _sendingPromises: Promise<unknown>[] = [];
 	protected headers: Record<string, string>;
@@ -39,6 +58,7 @@ export abstract class OTLPCloudflareExporterBase<
 	 */
 	constructor(config: T = {} as T) {
 		this.url = this.getUrl(config.url);
+		this.ctx = config.ctx;
 		if ((config as any).metadata) {
 			diag.warn("Metadata cannot be set when using http");
 		}
@@ -100,7 +120,7 @@ export abstract class OTLPCloudflareExporterBase<
 		const compressionStream = new CompressionStream("gzip");
 		const compressedBody = responseBuffer.body.pipeThrough(compressionStream);
 
-		const promise = fetch(this.url, {
+		const options = {
 			method: "POST",
 			headers: {
 				"content-type": this.contentType,
@@ -109,20 +129,21 @@ export abstract class OTLPCloudflareExporterBase<
 			},
 			body: compressedBody,
 			signal
-		})
-			.then(res => {
-				if (!res.ok) {
-					throw new OTLPExporterError(res.statusText, res.status);
-				}
-			})
-			.catch(error => {
-				if (isError(error)) {
-					if (error.name === "TimeoutError") {
-						throw new OTLPExporterError("Request Timeout");
-					}
-				}
-				throw new OTLPExporterError(`Unknown error ${error}`);
-			});
+		};
+		let promise: Promise<void>;
+		if (this.ctx) {
+			promise = Promise.resolve(
+				this.ctx.waitUntil(
+			  	fetch(this.url, options)
+				  	.then(handleErrorResponse)
+					  .catch(handleCatchResponse)
+		  	)
+			);
+		} else {
+			promise = fetch(this.url, options)
+				.then(handleErrorResponse)
+				.catch(handleCatchResponse);
+		}
 
 		this._sendingPromises.push(promise);
 		return promise;

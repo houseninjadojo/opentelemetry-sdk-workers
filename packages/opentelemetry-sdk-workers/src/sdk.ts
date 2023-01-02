@@ -65,6 +65,8 @@ export class WorkersSDK {
     private readonly span: Span;
     private readonly spanContext: Context;
     private readonly startTime: number;
+	private readonly bootStartTime: number;
+	private readonly bootEndTime: number;
     private readonly allowedHeaders: (string | RegExp)[] = ['user-agent', 'cf-ray'];
     private readonly allowedSearch: RegExp | (string | RegExp)[] = /.*/;
 
@@ -94,12 +96,15 @@ export class WorkersSDK {
             resource,
             traceExporter: new OTLPJsonTraceExporter({
                 url: env["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"] ?? env["OTEL_EXPORTER_OTLP_ENDPOINT"],
-                headers: baggageUtils.parseKeyPairsIntoRecord(rawHeaders)
+                headers: baggageUtils.parseKeyPairsIntoRecord(rawHeaders),
+				ctx,
             })
         });
     }
 
     public constructor(private eventOrRequest: Request | ScheduledEvent, private ctx: CfContext, config: NodeSdkConfig) {
+		this.bootStartTime = Date.now();
+
         /**
          * Cloudflare workers provides basically no discoverable metadata to workers.
          */
@@ -119,6 +124,7 @@ export class WorkersSDK {
         } else {
             this.traceExporter = new OTLPJsonTraceExporter({
                 url: config.endpoint,
+				ctx,
                 ...config,
             });
         }
@@ -159,6 +165,7 @@ export class WorkersSDK {
                 this.#ingestEvent(event);
             }
         });
+		this.bootEndTime = Date.now();
     }
 
     public async fetch(request: Request | string, requestInitr?: RequestInit | Request): Promise<Response> {
@@ -255,6 +262,8 @@ export class WorkersSDK {
             span.setAttribute(SemanticAttributes.HTTP_STATUS_CODE, responseOrError['status'] ?? 0);
             span.recordException(responseOrError, new Date());
         }
+		span.setAttribute('boot.start_time', this.bootStartTime);
+		span.setAttribute('boot.end_time', this.bootEndTime);
         span.end(new Date());
     }
 
